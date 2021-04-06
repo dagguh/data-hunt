@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using static view.gui.GameObjectExtensions;
 using model;
 
 namespace view.gui.timecross
@@ -9,12 +9,12 @@ namespace view.gui.timecross
 
         public TimeCross(Game game, DayNightCycle dayNight)
         {
-            var pastTrack = GameObject.Find("Past").AddComponent<PastTrack>();
+            var pastTrack = FindOrFail("Past").AddComponent<PastTrack>();
             pastTrack.DayNight = dayNight;
             pastTrack.Wire(game);
-            var futureTrack = GameObject.Find("Future").AddComponent<FutureTrack>();
+            var futureTrack = FindOrFail("Future").AddComponent<FutureTrack>();
             futureTrack.Wire(game, dayNight);
-            PresentBox = GameObject.Find("Present").AddComponent<PresentBox>();
+            PresentBox = FindOrFail("Present").AddComponent<PresentBox>();
             PresentBox.Wire(game, dayNight, futureTrack);
         }
     }

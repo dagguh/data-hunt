@@ -3,6 +3,7 @@ using model;
 using model.timing;
 using UnityEngine;
 using view.gui.timecross;
+using static view.gui.GameObjectExtensions;
 
 namespace view.gui
 {
@@ -23,8 +24,8 @@ namespace view.gui
 
         private PaidWindowView WirePaidWindow(PaidWindow window)
         {
-            var pass = GameObject.Find("Pass").AddComponent<PaidWindowPass>();
-            PaidChoice = GameObject.Find("Paid choice").AddComponent<DropZone>();
+            var pass = FindOrFail("Pass").AddComponent<PaidWindowPass>();
+            PaidChoice = FindOrFail("Paid choice").AddComponent<DropZone>();
             return new PaidWindowView(window, pass, PaidChoice);
         }
 

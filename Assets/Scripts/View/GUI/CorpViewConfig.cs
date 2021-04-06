@@ -1,5 +1,5 @@
 ﻿using model;
-using UnityEngine;
+using static view.gui.GameObjectExtensions;
 
 namespace view.gui
 {
@@ -8,10 +8,10 @@ namespace view.gui
         public CorpView Display(Game game, BoardParts parts)
         {
             var zones = game.corp.zones;
-            var credits = GameObject.Find("Corp/Credits");
+            var credits = FindOrFail("Corp/Credits");
             game.corp.credits.Changed += credits.AddComponent<CreditSpiral>().UpdateBalance;
             game.corp.credits.Changed += credits.AddComponent<PileCount>().UpdateBalance;
-            var servers = new ServerRow(GameObject.Find("Servers"), parts, zones);
+            var servers = new ServerRow(FindOrFail("Servers"), parts, zones);
             var archivesBox = servers.Box(zones.archives);
             archivesBox.Printer.Sideways = true;
             var rd = servers.Box(zones.rd).Printer.PrintCorpFacedown("Top of R&D");

@@ -5,7 +5,9 @@ using model.zones;
 using UnityEngine;
 using view;
 using view.gui;
+using view.gui.brackets;
 using view.log;
+using static view.gui.GameObjectExtensions;
 
 public class GameConfig : MonoBehaviour
 {
@@ -14,7 +16,7 @@ public class GameConfig : MonoBehaviour
 
     void Start()
     {
-        var board = GameObject.Find("/Board");
+        var board = FindOrFail("/Board");
         gameMenu = board.GetComponentInChildren<GameMenu>();
         gameMenu.Resume();
         var perception = new RunnerPerception();
@@ -44,6 +46,7 @@ public class GameConfig : MonoBehaviour
         flowLog.Display(game);
         var corpView = new CorpViewConfig().Display(game, parts);
         new RunnerViewConfig().Display(game.runner, flowView, corpView, parts);
+        new RunnerGameBracket(FindOrFail("Game bracket"), game);
         game.Start(corpDeck, runnerDeck);
     }
 

@@ -5,6 +5,7 @@ using model.play;
 using model.timing;
 using UnityEngine;
 using UnityEngine.UI;
+using static view.gui.GameObjectExtensions;
 
 namespace view.gui.timecross
 {
@@ -31,10 +32,10 @@ namespace view.gui.timecross
 
         private void WireRunnerActionPhase(Game game)
         {
-            RunnerActionPhase = GameObject.Find("Runner action phase");
+            RunnerActionPhase = FindOrFail("Runner action phase");
             var background = RunnerActionPhase.GetComponent<Image>();
             dayNight.Paint(background, Side.RUNNER);
-            BankCredit = GameObject.Find("Bank/Credit");
+            BankCredit = FindOrFail("Bank/Credit");
             SetRunnerActions(false);
             game.runner.turn.TakingAction += BeginRunnerAction;
             game.runner.turn.ActionTaken += EndRunnerAction;
@@ -48,7 +49,7 @@ namespace view.gui.timecross
 
         private void WireCorpActionPhase(Game game)
         {
-            corpActionPhase = GameObject.Find("Corp action phase");
+            corpActionPhase = FindOrFail("Corp action phase");
             var background = corpActionPhase.GetComponent<Image>();
             dayNight.Paint(background, Side.CORP);
             corpActionPhase.SetActive(false);
@@ -58,7 +59,7 @@ namespace view.gui.timecross
 
         private void WireDiscardPhase(Game game)
         {
-            discardPhase = GameObject.Find("Discard phase");
+            discardPhase = FindOrFail("Discard phase");
             discardBackground = discardPhase.GetComponent<Image>();
             discardPhase.SetActive(false);
             game.runner.zones.grip.DiscardingOne += RenderRunnerDiscarding;

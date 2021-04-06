@@ -13,8 +13,8 @@ namespace model
         public readonly Runner runner;
         private readonly Zone playArea;
         public readonly Checkpoint checkpoint;
-        public event EventHandler<ITurn> CurrentTurn = delegate { };
-        public event EventHandler<ITurn> NextTurn = delegate { };
+        public event Action<ITurn> CurrentTurn = delegate { };
+        public event Action<ITurn> NextTurn = delegate { };
         public event Action<GameFinish> Finished = delegate { };
         private bool ended = false;
         private Queue<ITurn> turns = new Queue<ITurn>();
@@ -82,8 +82,8 @@ namespace model
         private async Task StartNextTurn()
         {
             var currentTurn = turns.Dequeue();
-            CurrentTurn(this, currentTurn);
-            NextTurn(this, turns.Peek());
+            CurrentTurn(currentTurn);
+            NextTurn(turns.Peek());
             await currentTurn.Start();
         }
 

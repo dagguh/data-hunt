@@ -53,13 +53,13 @@ namespace view.gui.timecross
             background = gameObject.AddComponent<Image>();
         }
 
-        internal void DisplayCurrent(object sender, ITurn turn)
+        internal void DisplayCurrent(ITurn turn)
         {
             dayNight.Paint(background, turn.Side);
             TrackClicks(turn, UpdateRemainingClicks);
         }
 
-        internal void DisplayNext(object sender, ITurn turn)
+        internal void DisplayNext(ITurn turn)
         {
             dayNight.Paint(background, turn.Side);
             TrackClicks(turn, UpdateNextClicks);

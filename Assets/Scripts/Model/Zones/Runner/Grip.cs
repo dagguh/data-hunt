@@ -26,9 +26,9 @@ namespace model.zones.runner
             await discarded.Task;
         }
 
-        public void Discard(Card card, Heap heap)
+        async public Task Discard(Card card, Heap heap)
         {
-            card.MoveTo(heap.zone);
+            await card.MoveTo(heap.zone);
             DiscardedOne(card);
             discarded.SetResult(true);
         }

@@ -1,6 +1,7 @@
 ﻿using model.cards;
 using model.choices;
 using model.choices.trash;
+using model.play;
 using model.steal;
 using model.zones;
 using System.Collections.Generic;
@@ -22,9 +23,9 @@ namespace model.player
             basic.Play(game);
         }
 
-        public virtual Task<IEffect> TriggerFromSimultaneous(IList<IEffect> effects)
+        public virtual Task<CardAbility> TriggerFromSimultaneous(IList<CardAbility> abilities)
         {
-            return basic.TriggerFromSimultaneous(effects);
+            return basic.TriggerFromSimultaneous(abilities);
         }
 
         public virtual IDecision<string, Card> ChooseACard()

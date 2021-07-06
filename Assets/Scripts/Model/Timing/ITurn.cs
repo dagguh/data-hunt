@@ -1,27 +1,13 @@
-﻿using System.Threading.Tasks;
-using model.play;
+﻿using model.player;
 
-namespace model.timing
-{
-    public interface ITurn
-    {
-        ClickPool Clicks { get; }
-        Side Side { get; }
-        Task Start();
+namespace model.timing {
+    public abstract class ITurn : ITimingStructure {
 
-        /// <summary>
-        /// Tells observers the turn has just started.
-        /// It's different from "when begins" triggers, because it's not for card effects. It's for tracking the earliest moment when the turn is considered active.
-        /// For example for tracking/resetting counters per turn.
-        /// </summary>
-        event AsyncAction<ITurn> Started;
+        public abstract ClickPool Clicks { get; }
+        public abstract Side Side { get; }
+        public abstract IPilot Owner { get; }
 
-        /// <summary>
-        /// Registers a game effect to be fired at the beginning of the turn, e.g. PAD Campaign.
-        /// </summary>
-        void WhenBegins(IEffect effect);
-
-        event AsyncAction<ITurn> TakingAction;
-        event AsyncAction<ITurn, Ability> ActionTaken;
+        protected ITurn(string name) : base(name) {
+        }
     }
 }

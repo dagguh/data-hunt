@@ -21,11 +21,11 @@ namespace model.timing
             var preAccessInfo = Look();
             var preAccessZone = card.Zone;
             await TriggerAccessingCard(); // 7.8.1
-            await game.Checkpoint(); // 7.8.2
+            await game.Timing.Checkpoint(); // 7.8.2
             await Trash(); // 7.8.3
             await Steal(); // 7.8.4
             await TriggerAfterAccessingCard(); // 7.8.5
-            await game.Checkpoint(); // 7.8.6
+            await game.Timing.Checkpoint(); // 7.8.6
             StopLooking(preAccessInfo, preAccessZone);
         }
 

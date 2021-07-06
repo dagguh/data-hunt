@@ -17,13 +17,13 @@ namespace view.log
             game.runner.paidWindow.Closed += LogClosed;
             var runnerTurn = game.runner.turn;
             var corpTurn = game.corp.turn;
-            corpTurn.Started += TurnStarted;
+            corpTurn.Opened += TurnStarted;
             corpTurn.TakingAction += (turn) => LogAsync("corp taking action");
             corpTurn.ActionTaken += (turn, action) => LogAsync("corp took action");
             game.corp.Rezzing.Window.Opened += (window, rezzables) => LogAsync("rez window opened, up to " + rezzables.Count + " could be rezzed");
             game.corp.Rezzing.Window.Closed += (window) => Log("rez window closed");
             game.corp.zones.hq.DiscardingOne += () => Log("discarding");
-            runnerTurn.Started += TurnStarted;
+            runnerTurn.Opened += TurnStarted;
             runnerTurn.TakingAction += (turn) => LogAsync("runner taking action");
             runnerTurn.ActionTaken += (turn, action) => LogAsync("runner took action");
             game.runner.zones.grip.DiscardingOne += () => Log("discarding");

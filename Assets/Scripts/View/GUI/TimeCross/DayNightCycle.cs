@@ -14,11 +14,6 @@ namespace view.gui.timecross
         private Sprite nightCity = Resources.Load<Sprite>("Images/Background/high-rise-photography-of-city-2039630");
         private Image background = FindOrFail("Board").GetComponent<Image>();
 
-        public void Wire(Game game)
-        {
-            game.CurrentTurn += UpdateBackground;
-        }
-
         void UpdateBackground(ITurn turn)
         {
             switch (turn.Side)

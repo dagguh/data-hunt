@@ -5,7 +5,7 @@ namespace model.zones.corp
 {
     public class Root : IInstallDestination
     {
-        void IInstallDestination.Host(Card card)
+        Task IInstallDestination.Host(Card card)
         {
             // if (card.Type.Rezzable)
             // {

@@ -33,10 +33,10 @@ namespace model.zones
         async Task IEffect.Resolve()
         {
             card.FlipFaceUp();
-            card.MoveTo(playZone);
+            await card.MoveTo(playZone);
             await card.Activate();
-            card.Deactivate();
-            card.MoveTo(bin);
+            await card.Deactivate();
+            await card.MoveTo(bin);
         }
 
         public override string ToString() => "Play(card=" + card + ")";

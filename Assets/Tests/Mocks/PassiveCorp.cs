@@ -22,7 +22,7 @@ namespace tests.mocks
                 await clickForCredit.Trigger();
                 SkipPaidWindow();
             }
-            DiscardRandomCards();
+            await DiscardRandomCards();
             SkipPaidWindow();
         }
 
@@ -32,10 +32,10 @@ namespace tests.mocks
             game.runner.paidWindow.Pass();
         }
 
-        public void DiscardRandomCards()
+        async public Task DiscardRandomCards()
         {
             var hq = game.corp.zones.hq;
-            hq.Discard(hq.Random(), game.corp.zones.archives);
+            await hq.Discard(hq.Random(), game.corp.zones.archives);
         }
     }
 }

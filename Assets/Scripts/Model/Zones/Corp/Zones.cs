@@ -78,7 +78,7 @@ namespace model.zones.corp
 
             async Task IEffect.Resolve()
             {
-                rd.Draw(cards, hq);
+                await rd.Draw(cards, hq);
                 await Task.CompletedTask;
             }
         }

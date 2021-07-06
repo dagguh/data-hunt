@@ -37,7 +37,7 @@ namespace view.gui
             rectangle.anchorMax = new Vector2(0.70f, 0.70f);
             rectangle.offsetMin = Vector2.zero;
             rectangle.offsetMax = Vector2.zero;
-            game.Finished += view.AddComponent<GameFinishPanel>().PopUp;
+            game.Timing.Finished += view.AddComponent<GameFinishPanel>().PopUp;
             return view;
         }
     }

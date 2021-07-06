@@ -26,14 +26,14 @@ namespace model.zones.corp
             return (Ice.Height == 0) && (Zone.Count == 0);
         }
 
-        void IInstallDestination.Host(Card card)
+        async Task IInstallDestination.Host(Card card)
         {
             Zone
                 .Cards
                 .Select(it => new Trash(it, corp.zones.archives.Zone))
                 .ToList()
-                .ForEach(it => it.TrashIt());
-            card.MoveTo(Zone);
+                .ForEach(async it => await it.TrashIt());
+            await card.MoveTo(Zone);
         }
 
         // CR: 8.2.5.a

@@ -26,14 +26,13 @@ namespace model.costs
 
         async Task ICost.Pay()
         {
-            TrashIt();
-            await Task.CompletedTask;
+            await TrashIt();
         }
 
-        public void TrashIt()
+        async public Task TrashIt()
         {
-            card.Deactivate();
-            card.MoveTo(bin);
+            await card.Deactivate();
+            await card.MoveTo(bin);
         }
     }
 }

@@ -30,9 +30,9 @@ namespace model.zones.corp
             await discarding.Task;
         }
 
-        public void Discard(Card card, Archives archives)
+        async public Task Discard(Card card, Archives archives)
         {
-            card.MoveTo(archives.Zone);
+            await card.MoveTo(archives.Zone);
             DiscardedOne(card);
             discarding.SetResult(true);
         }

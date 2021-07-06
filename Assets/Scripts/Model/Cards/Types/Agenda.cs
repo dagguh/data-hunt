@@ -6,6 +6,8 @@ namespace model.cards.types
 {
     public class Agenda : IType
     {
+        bool IType.Corp => true;
+        bool IType.Runner => false;
         bool IType.Playable => false;
         bool IType.Installable => true;
         bool IType.Rezzable => false;

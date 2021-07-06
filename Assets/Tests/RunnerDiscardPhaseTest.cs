@@ -38,7 +38,7 @@ namespace tests
             for (int i = 0; i < 7; i++)
             {
                 var card = grip.Find<Diesel>();
-                game.runner.zones.grip.Discard(card, heap);
+                await game.runner.zones.grip.Discard(card, heap);
             }
             await passiveCorp.SkipTurn();
 

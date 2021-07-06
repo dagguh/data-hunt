@@ -20,22 +20,32 @@ namespace model.cards.corp
 
         private class HaarpsichordEffect : IEffect
         {
+            private HaarpsichordMemory memory;
+            private HaarpsichordModifier mod;
+            private Game game;
             public bool Impactful => true;
             public event Action<IEffect, bool> ChangedImpact = delegate { };
             IEnumerable<string> IEffect.Graphics => new string[] { };
 
-            private Game game;
-
-            public HaarpsichordEffect(Game game) => this.game = game;
+            public HaarpsichordEffect(Game game)
+            {
+                this.game = game;
+                memory = new HaarpsichordMemory();
+                mod = new HaarpsichordModifier(memory);
+                game.corp.turn.Opened += memory.Reset;
+                game.runner.turn.Opened += memory.Reset;
+                game.runner.Stealing.ModifyStealing(mod);
+            }
 
             async Task IEffect.Resolve()
             {
-                var memory = new HaarpsichordMemory();
-                game.corp.turn.Started += memory.Reset;
-                game.runner.turn.Started += memory.Reset;
-                var mod = new HaarpsichordModifier(memory);
-                game.runner.Stealing.ModifyStealing(mod);
+                mod.Enabled = true;
                 await Task.CompletedTask;
+            }
+
+            void IEffect.Disable()
+            {
+                mod.Enabled = false;
             }
         }
 
@@ -53,6 +63,7 @@ namespace model.cards.corp
         private class HaarpsichordModifier : IStealModifier
         {
             private HaarpsichordMemory memory;
+            public bool Enabled { get; set; } = true;
 
             public HaarpsichordModifier(HaarpsichordMemory memory)
             {
@@ -61,7 +72,14 @@ namespace model.cards.corp
 
             IStealOption IStealModifier.Modify(IStealOption option)
             {
-                return new StealingWhileHaarpsichordWatches(memory, option);
+                if (Enabled)
+                {
+                    return new StealingWhileHaarpsichordWatches(memory, option);
+                }
+                else
+                {
+                    return option;
+                }
             }
         }
 

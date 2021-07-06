@@ -1,82 +1,63 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using model.play;
+using model.player;
 
-namespace model.timing.runner
-{
-    public class RunnerTurn : ITurn
-    {
-        private Game game;
-        public bool Active { get; private set; } = false;
-        ClickPool ITurn.Clicks => game.runner.clicks;
-        Side ITurn.Side => Side.RUNNER;
+namespace model.timing.runner {
+    public class RunnerTurn : ITurn {
+        private Runner runner;
+        private Timing timing;
+        override public ClickPool Clicks => runner.clicks;
+        override public Side Side => Side.RUNNER;
+        override public IPilot Owner => runner.pilot;
         private List<IEffect> turnBeginningTriggers = new List<IEffect>();
-        public event AsyncAction<ITurn> Started;
         public event AsyncAction<ITurn> TakingAction;
         public event AsyncAction<ITurn, Ability> ActionTaken;
 
-        public RunnerTurn(Game game)
-        {
-            this.game = game;
+        public RunnerTurn(Runner runner, Timing timing, int turnNumber): base("Runner turn " + turnNumber) {
+
         }
 
-        async Task ITurn.Start()
-        {
-            Active = true;
-            await Started?.Invoke(this);
+        override async protected Task Proceed() {
             await ActionPhase();
             await DiscardPhase();
-            Active = false;
         }
 
-        async private Task ActionPhase()
-        {
-            game.runner.clicks.Replenish(); // CR: 5.7.1.a
+        async private Task ActionPhase() {
+            runner.clicks.Replenish(); // CR: 5.7.1.a
             var rez = OpenRezWindow(); // CR: 5.7.1.b
             var paid = OpenPaidWindow(); // CR: 5.7.1.b
             await rez;
             await paid;
             RefillRecurringCredits(); // CR: 5.7.1.c
-            await TriggerTurnBeginning(); // CR: 5.7.1.d
+            await Begins.Open(); // CR: 5.7.1.d
             var rez2 = OpenRezWindow(); // CR: 5.7.1.e
             var paid2 = OpenPaidWindow(); // CR: 5.7.1.e
             await rez2;
             await paid2;
-            while (game.runner.clicks.Remaining > 0) // CR: 5.7.1.g
+            while (runner.clicks.Remaining > 0) // CR: 5.7.1.g
             {
                 await TakeAction(); // CR: 5.7.1.f
             }
-            await game.Checkpoint(); // CR: 5.7.1.g
+            await timing.Checkpoint(); // CR: 5.7.1.g
         }
 
-        async private Task OpenPaidWindow()
-        {
-            await game.OpenPaidWindow(
+        async private Task OpenPaidWindow() {
+            await timing.OpenPaidWindow(
                 acting: game.runner.paidWindow,
                 reacting: game.corp.paidWindow
             );
         }
 
-        async private Task OpenRezWindow()
-        {
+        async private Task OpenRezWindow() {
             await game.corp.Rezzing.Window.Open();
         }
 
-        private void RefillRecurringCredits()
-        {
+        private void RefillRecurringCredits() {
 
         }
 
-        async private Task TriggerTurnBeginning()
-        {
-            if (turnBeginningTriggers.Count > 0)
-            {
-                await new SimultaneousTriggers(turnBeginningTriggers.Copy()).AllTriggered(game.runner.pilot);
-            }
-        }
-
-        async private Task TakeAction()
-        {
+        async private Task TakeAction() {
             var actionTaking = game.runner.Acting.TakeAction();
             TakingAction?.Invoke(this);
             var action = await actionTaking;
@@ -87,8 +68,7 @@ namespace model.timing.runner
             await paid;
         }
 
-        async private Task DiscardPhase()
-        {
+        async private Task DiscardPhase() {
             await Discard(); // CR: 5.7.2.a
             var rez = OpenRezWindow(); // CR: 5.7.2.b
             var paid = OpenPaidWindow(); // CR: 5.7.2.b
@@ -99,22 +79,14 @@ namespace model.timing.runner
             await game.Checkpoint(); // CR: 5.7.2.e
         }
 
-        async private Task Discard()
-        {
+        async private Task Discard() {
             var grip = game.runner.zones.grip;
-            while (grip.zone.Count > 5)
-            {
+            while (grip.zone.Count > 5) {
                 await grip.Discard();
             }
         }
 
-        private void TriggerTurnEnding()
-        {
-        }
-
-        public void WhenBegins(IEffect effect)
-        {
-            turnBeginningTriggers.Add(effect);
+        private void TriggerTurnEnding() {
         }
     }
 }

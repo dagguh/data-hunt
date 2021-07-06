@@ -4,11 +4,11 @@ using model.zones;
 
 namespace model.cards.types
 {
-    public class Event : IType
+    public class CorpIdentity : IType
     {
-        bool IType.Corp => false;
-        bool IType.Runner => true;
-        bool IType.Playable => true;
+        bool IType.Corp => true;
+        bool IType.Runner => false;
+        bool IType.Playable => false;
         bool IType.Installable => false;
         bool IType.Rezzable => false;
         IList<IInstallDestination> IType.FindInstallDestinations() => new List<IInstallDestination>();

@@ -19,10 +19,10 @@ namespace model.steal
         }
 
         bool IStealOption.IsLegal() => true;
-        Task<bool> IStealOption.Perform()
+        async Task<bool> IStealOption.Perform()
         {
-            zones.score.Add(card, agendaPoints); // CR: 1.16.3
-            return Task.FromResult(true);
+            await zones.score.Add(card, agendaPoints); // CR: 1.16.3
+            return true;
         }
     }
 }

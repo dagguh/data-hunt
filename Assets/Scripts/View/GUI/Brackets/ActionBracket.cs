@@ -7,13 +7,13 @@ namespace view.gui.brackets
     public class ActionBracket
     {
         private readonly ITurn turn;
-        private readonly int actionOrder;
+        private readonly int actionNumber;
         private readonly Bracket bracket;
 
-        public ActionBracket(ITurn turn, int actionOrder, Bracket bracket)
+        public ActionBracket(ITurn turn, int actionNumber, Bracket bracket)
         {
             this.turn = turn;
-            this.actionOrder = actionOrder;
+            this.actionNumber = actionNumber;
             this.bracket = bracket;
             turn.TakingAction += UpdateActivation;
             turn.ActionTaken += UpdateEffect;
@@ -30,20 +30,17 @@ namespace view.gui.brackets
 
         private bool IsPresent()
         {
-            return turn.Clicks.Spent == actionOrder - 1;
+            return turn.Clicks.Spent == actionNumber;
         }
 
         private bool IsPast()
         {
-            return turn.Clicks.Spent >= actionOrder;
+            return turn.Clicks.Spent >= actionNumber;
         }
 
         async private Task UpdateEffect(ITurn turn, Ability action)
         {
-            if (IsPast())
-            {
-                bracket.Collapse();
-            }
+            bracket.Collapse();
             // action.effect.Graphics;
             await Task.CompletedTask;
         }

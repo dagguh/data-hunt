@@ -49,8 +49,7 @@ namespace model.zones.runner
 
             async Task IEffect.Resolve()
             {
-                stack.Draw(cards, grip);
-                await Task.CompletedTask;
+                await stack.Draw(cards, grip);
             }
         }
 

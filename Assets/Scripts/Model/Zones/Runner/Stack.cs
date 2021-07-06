@@ -1,4 +1,6 @@
-﻿namespace model.zones.runner
+﻿using System.Threading.Tasks;
+
+namespace model.zones.runner
 {
     public class Stack
     {
@@ -10,11 +12,11 @@
             this.shuffling = shuffling;
         }
 
-        public void AddDeck(Deck deck)
+        async public Task AddDeck(Deck deck)
         {
             foreach (var card in deck.cards)
             {
-                card.MoveTo(zone);
+                await card.MoveTo(zone);
             }
             Shuffle();
         }
@@ -26,13 +28,13 @@
 
         public bool HasCards() => zone.Cards.Count > 0;
 
-        public void Draw(int cards, Grip grip)
+        async public Task Draw(int cards, Grip grip)
         {
             for (int i = 0; i < cards; i++)
             {
                 if (HasCards())
                 {
-                    zone.Cards[0].MoveTo(grip.zone);
+                    await zone.Cards[0].MoveTo(grip.zone);
                 }
             }
         }

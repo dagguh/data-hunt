@@ -1,4 +1,5 @@
-﻿using model.cards.types;
+﻿using System.Threading.Tasks;
+using model.cards.types;
 
 namespace model.cards.runner
 {
@@ -10,7 +11,10 @@ namespace model.cards.runner
         override public Faction Faction { get { return Factions.CRIMINAL; } }
         override public int InfluenceCost { get { return 1; } }
         override public ICost PlayCost => game.runner.credits.PayingForPlaying(this, 0);
-        override public IEffect Activation => new effects.Nothing();
         override public IType Type => new Hardware(game);
+
+        protected override Task Activate() {
+            return Task.FromResult("Add the abilities");
+        }
     }
 }

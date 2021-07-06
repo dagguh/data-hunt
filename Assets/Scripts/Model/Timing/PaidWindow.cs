@@ -1,61 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using model.play;
+using model.player;
 
-namespace model.timing
-{
-    public class PaidWindow
-    {
-        private readonly string label;
-        private PaidWindowPermission permission = new PaidWindowPermission();
-        public event Action<PaidWindow> Opened = delegate { };
-        public event Action<PaidWindow> Closed = delegate { };
-        public event Action<PaidWindow, CardAbility> Added = delegate { };
-        public event Action<PaidWindow, CardAbility> Removed = delegate { };
-        private List<CardAbility> abilities = new List<CardAbility>();
-        private TaskCompletionSource<bool> pass;
+namespace model.timing {
+    public class PaidWindow : PriorityWindow {
+        private bool rezzing;
+        private bool scoring;
+        private IPilot acting;
+        private IPilot reacting;
 
-        public PaidWindow(string label)
-        {
-            this.label = label;
+        public PaidWindow(bool rezzing, bool scoring, IPilot acting, IPilot reacting, string name) : base(name) {
+            this.rezzing = rezzing;
+            this.scoring = scoring;
+            this.acting = acting;
+            this.reacting = reacting;
         }
 
-        public List<CardAbility> ListAbilities() => new List<CardAbility>(abilities);
-
-        public ICost Permission() => permission;
-
-        async public Task<bool> AwaitPass()
-        {
-            pass = new TaskCompletionSource<bool>();
-            permission.Grant();
-            Opened(this);
-            await pass.Task;
-            Closed(this);
-            permission.Revoke();
-            return !permission.WasPaid();
+        internal void GiveOption(IPilot pilot, IPlayOption pop) {
+            throw new System.NotImplementedException();
         }
 
-        public void Pass()
-        {
-            pass.SetResult(true);
+        async override protected Task Proceed() {
+            var bothPlayersCouldAct = false; // CR: 9.2.7.a
+            while (true) {
+                var action = await AwaitPass(acting);
+                if (action.Declined && bothPlayersCouldAct) {
+                    break;
+                }
+                var reaction = await AwaitPass(reacting);
+                bothPlayersCouldAct = true;
+                if (reaction.Declined && bothPlayersCouldAct) {
+                    break;
+                }
+            }
         }
 
-        public void Add(CardAbility ability)
-        {
-            abilities.Add(ability);
-            Added(this, ability);
-        }
-
-        public void Remove(CardAbility ability)
-        {
-            abilities.Remove(ability);
-            Removed(this, ability);
-        }
-
-        public override string ToString()
-        {
-            return "PaidWindow(label=" + label + ")";
+        async private Task<Priority> AwaitPass(IPilot pilot) {
+            var priority = new Priority(canPass: true); // CR: 9.2.4.b
+            PriorityGiven(priority);
+            while (!priority.Passed) // CR: 9.2.4.c
+            {
+                await pilot.Receive(priority); // CR: 9.2.7.f
+            }
+            return priority;
         }
     }
 }

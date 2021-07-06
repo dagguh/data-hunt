@@ -22,7 +22,7 @@ namespace model.choices.trash
         async Task<bool> ITrashOption.Perform()
         {
             await cost.Pay();
-            card.MoveTo(archives.Zone);
+            await card.MoveTo(archives.Zone);
             return true;
         }
 

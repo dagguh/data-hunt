@@ -23,11 +23,11 @@ namespace model.zones.corp
             Ice = new IceColumn(this, corp.credits);
         }
 
-        public void AddDeck(Deck deck)
+        async public Task AddDeck(Deck deck)
         {
             foreach (var card in deck.cards)
             {
-                card.MoveTo(Zone);
+                await card.MoveTo(Zone);
             }
             Shuffle();
         }
@@ -40,13 +40,13 @@ namespace model.zones.corp
 
         public bool HasCards() => Zone.Cards.Count > 0;
 
-        public void Draw(int cards, Headquarters hq)
+        async public Task Draw(int cards, Headquarters hq)
         {
             for (int i = 0; i < cards; i++)
             {
                 if (HasCards())
                 {
-                    Zone.Cards[0].MoveTo(hq.Zone);
+                    await Zone.Cards[0].MoveTo(hq.Zone);
                 }
                 else
                 {

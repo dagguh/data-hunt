@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using model;
 using model.timing;
+using model.timing.corp;
 using UnityEngine;
 
 namespace view.gui.brackets
@@ -7,33 +9,45 @@ namespace view.gui.brackets
     class RunnerGameBracket
     {
         private Bracket bracket;
+        private Timing timing;
 
         public RunnerGameBracket(GameObject container, Game game)
         {
             bracket = new Bracket("Game", container);
             container.AddComponent<HorizontalLayoutWithAnchoredSize>();
-            game.CurrentTurn += DisplayTurn;
+            game.Timing.CorpTurnDefined += DisplayCorpTurn;
         }
 
-        private void DisplayTurn(ITurn turn)
+        private void DisplayCorpTurn(CorpTurn turn)
         {
-            switch (turn.Side)
+            var turnContainer = bracket.Nest(turn.Name);
+            turn.ActionPhaseDefined += DisplayCorpActionPhase;
+
+        }
+
+        private void DisplayCorpActionPhase(CorpActionPhase phase)
+        {
+            phase.ActionWindowDefined += DisplayCorpActionWindow;
+            for (int i = 0; i < turn.Clicks.NextReplenishment; i++)
             {
-                case Side.RUNNER: DisplayRunnerTurn(turn); break;
-                case Side.CORP: DisplayCorpTurn(turn); break;
+                int actionOrder = i + 1;
+                var actionBracket = turnContainer.Nest("Action " + actionOrder);
+                new ActionBracket(turn, actionOrder, actionBracket);
             }
+            new TurnBracket(turnContainer, turn);
+            await Task.CompletedTask;
         }
 
-        private void DisplayRunnerTurn(ITurn turn)
+        private void DisplayCorpActionWindow(CorpActionWindow window)
         {
-            var turnContainer = bracket.Nest("Runner turn");
-            new TurnBracket(turnContainer, turn);
+
         }
 
-        private void DisplayCorpTurn(ITurn turn)
+        async private Task DisplayRunnerTurn(ITurn turn)
         {
-            var turnContainer = bracket.Nest("Corp turn");
+            var turnContainer = bracket.Nest("Runner turn " + turn.Number);
             new TurnBracket(turnContainer, turn);
+            await Task.CompletedTask;
         }
     }
 }

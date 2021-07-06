@@ -6,9 +6,9 @@ namespace model.play
 {
     public class SimultaneousTriggers
     {
-        public IList<IEffect> untriggered;
+        public IList<Ability> untriggered;
 
-        public SimultaneousTriggers(IList<IEffect> effects)
+        public SimultaneousTriggers(IList<Ability> effects)
         {
             untriggered = effects;
         }
@@ -18,9 +18,9 @@ namespace model.play
             while (untriggered.Count > 0)
             {
                 UnityEngine.Debug.Log("Picking the next effect to fire among " + untriggered);
-                var effect = await pilot.TriggerFromSimultaneous(untriggered);
-                await effect.Resolve();
-                untriggered.Remove(effect);
+                var ability = await pilot.TriggerFromSimultaneous(untriggered);
+                await ability.Ability.Trigger();
+                untriggered.Remove(ability);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using model.cards.types;
 using model.costs;
 using model.play;
+using model.timing;
 using model.zones;
 
 namespace model.cards.runner
@@ -16,42 +17,42 @@ namespace model.cards.runner
         override public Faction Faction => Factions.MASQUE;
         override public int InfluenceCost => 0;
         override public ICost PlayCost => game.runner.credits.PayingForPlaying(this, 3);
-        override public IEffect Activation => new SportsHopperActivation(this, game.runner);
+        override public IEffect Activation => new SportsHopperActivation(this, game);
         override public IType Type => new Hardware(game);
 
         private class SportsHopperActivation : IEffect
         {
             private Card hopper;
-            private Runner runner;
+            private Game game;
             private CardAbility pop;
             public bool Impactful => true;
             public event Action<IEffect, bool> ChangedImpact = delegate { };
             IEnumerable<string> IEffect.Graphics => new string[] { };
 
-            public SportsHopperActivation(Card hopper, Runner runner)
+            public SportsHopperActivation(Card hopper, Game game)
             {
                 this.hopper = hopper;
-                this.runner = runner;
+                this.game = game;
+                var zones = game.runner.zones;
+                pop = new Ability(new Trash(hopper, zones.heap.zone), zones.Drawing(3), hopper).BelongingTo(hopper);
             }
 
             async Task IEffect.Resolve()
             {
-                var paidWindow = runner.paidWindow;
-                var heap = runner.zones.heap.zone;
-                if (pop == null)
-                {
-                    pop = new Ability(new Conjunction(paidWindow.Permission(), new Trash(hopper, heap)), runner.zones.Drawing(3)).BelongingTo(hopper);
-                }
-                paidWindow.Add(pop);
-                runner.zones.rig.zone.Removed += CheckIfUninstalled;
+                game.Timing.PaidWindowDefined += Register;
                 await Task.CompletedTask;
             }
 
-            private void CheckIfUninstalled(Zone zone, Card card)
+            private void Register(PaidWindow paidWindow)
             {
-                if (card == this.hopper)
+                paidWindow.PriorityGiven += Register;
+            }
+
+            private void Register(Priority priority)
+            {
+                if (priority.Pilot == game.runner.pilot)
                 {
-                    runner.paidWindow.Remove(pop);
+                    priority.Add(pop);
                 }
             }
         }

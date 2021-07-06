@@ -1,6 +1,7 @@
 ﻿using model.cards;
 using model.choices;
 using model.choices.trash;
+using model.play;
 using model.steal;
 using model.zones;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ namespace model.player
     {
         void IPilot.Play(Game game) { }
 
-        Task<IEffect> IPilot.TriggerFromSimultaneous(IList<IEffect> effects)
+        Task<CardAbility> IPilot.TriggerFromSimultaneous(IList<CardAbility> abilities)
         {
-            return Task.FromResult(effects.First());
+            return Task.FromResult(abilities.First());
         }
 
         IDecision<string, Card> IPilot.ChooseACard() => new FailingChoice<string, Card>();

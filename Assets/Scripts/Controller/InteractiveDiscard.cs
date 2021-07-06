@@ -27,7 +27,7 @@ namespace controller
 
         async Task IInteractive.Interact()
         {
-            grip.Discard(card, heap);
+            await grip.Discard(card, heap);
             await Task.CompletedTask;
         }
 

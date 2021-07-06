@@ -6,6 +6,8 @@ namespace model.cards.types
 {
     public class Program : IType
     {
+        bool IType.Corp => false;
+        bool IType.Runner => true;
         bool IType.Playable => false;
         bool IType.Installable => true;
         bool IType.Rezzable => false;

@@ -1,6 +1,7 @@
 using model.cards;
 using model.choices;
 using model.choices.trash;
+using model.play;
 using model.steal;
 using model.zones;
 using System.Collections.Generic;
@@ -13,15 +14,15 @@ namespace model.player
     {
         public SingleChoiceMaker(IPilot basic) : base(basic) { }
 
-        async override public Task<IEffect> TriggerFromSimultaneous(IList<IEffect> effects)
+        async override public Task<CardAbility> TriggerFromSimultaneous(IList<CardAbility> abilities)
         {
-            if (effects.Count == 1)
+            if (abilities.Count == 1)
             {
-                return effects.Single();
+                return abilities.Single();
             }
             else
             {
-                return await base.TriggerFromSimultaneous(effects);
+                return await base.TriggerFromSimultaneous(abilities);
             }
         }
 

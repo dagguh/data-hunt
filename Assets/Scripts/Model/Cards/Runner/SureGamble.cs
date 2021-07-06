@@ -1,4 +1,5 @@
-﻿using model.cards.types;
+﻿using System.Threading.Tasks;
+using model.cards.types;
 
 namespace model.cards.runner
 {
@@ -10,7 +11,10 @@ namespace model.cards.runner
         override public Faction Faction { get { return Factions.MASQUE; } }
         override public int InfluenceCost { get { return 0; } }
         override public ICost PlayCost => game.runner.credits.PayingForPlaying(this, 5);
-        override public IEffect Activation => game.runner.credits.Gaining(9);
         override public IType Type { get { return new Event(); } }
+
+        async protected override Task Activate() {
+            await game.runner.credits.Gaining(9).Resolve();
+        }
     }
 }

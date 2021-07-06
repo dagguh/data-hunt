@@ -13,7 +13,7 @@ namespace view.gui
     {
         private DropZone paidWindowTrigger;
         public DropZone DropZone { get; private set; }
-        private Dictionary<Card, GameObject> visuals = new Dictionary<Card, GameObject>();
+        private Dictionary<ISource, GameObject> visuals = new Dictionary<ISource, GameObject>();
         private CardPrinter printer;
 
         public RigGrid(GameObject gameObject, Runner runner, DropZone paidWindowTrigger, BoardParts parts)
@@ -35,11 +35,11 @@ namespace view.gui
             Object.Destroy(visuals[card]);
         }
 
-        private void LinkPaidAbility(PaidWindow window, CardAbility ability)
+        private void LinkPaidAbility(PaidWindow window, Ability ability)
         {
-            visuals[ability.Card]
+            visuals[ability.source]
                 .AddComponent<Droppable>()
-                .Represent(new InteractiveAbility(ability.Ability, paidWindowTrigger));
+                .Represent(new InteractiveAbility(ability, paidWindowTrigger));
         }
     }
 }

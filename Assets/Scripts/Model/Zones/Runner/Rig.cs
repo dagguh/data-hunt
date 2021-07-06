@@ -19,9 +19,9 @@ namespace model.zones.runner
             this.pilot = pilot;
         }
 
-        void IInstallDestination.Host(Card card)
+        async Task IInstallDestination.Host(Card card)
         {
-            card.MoveTo(zone);
+            await card.MoveTo(zone);
         }
 
         async Task IInstallDestination.TrashAlike(Card card)
@@ -31,7 +31,7 @@ namespace model.zones.runner
             {
                 var programs = zone.Cards.Where(it => it.Type is Program);
                 var old = await pilot.ChooseACard().Declare("Which program to trash?", programs); // actually declare zero or many, unless MU is constrained then a minimum
-                old.MoveTo(runner.zones.heap.zone); // TODO reuse an actual trash abstraction
+                await old.MoveTo(runner.zones.heap.zone); // TODO reuse an actual trash abstraction
             }
         }
 

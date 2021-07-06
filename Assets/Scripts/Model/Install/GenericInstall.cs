@@ -58,7 +58,7 @@ namespace model.install
         // CR: 8.3
         async public Task Resolve()
         {
-            PutOut();
+            await PutOut();
             var destination = await ChooseDestination();
             await TrashLikeCards(destination);
             await PayInstallCost(destination);
@@ -67,9 +67,9 @@ namespace model.install
         }
 
         // CR: 8.3.1
-        private void PutOut()
+        async private Task PutOut()
         {
-            card.MoveTo(playArea);
+            await card.MoveTo(playArea);
             card.FlipPreInstall();
         }
 
@@ -97,13 +97,13 @@ namespace model.install
         // CR: 8.3.5
         async private Task Place(IInstallDestination destination)
         {
-            destination.Host(card);
-            card.Installed();
+            await destination.Host(card);
+            await card.SetInstalled();
             if (card.Faction.Side == Side.RUNNER)
             {
                 // CR: 8.2.3
                 card.FlipFaceUp();
-                await card.Activate();
+                await card.BecomeActive();
             }
         }
 
